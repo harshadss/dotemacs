@@ -1,0 +1,167 @@
+#+TITLE:      Harshad's Emacs configuration, written in org-mode
+#+AUTHOR:     Harshad Saykhedkar
+
+* About This Document
+** Why?
+I am just starting out in the Emacs world. There are many things in the
+emacs configurations that I am not clear about. It also happens that I tend
+to forget why a particular configuration is done in a particular way. Writing
+the Emacs configuration in Org mode will help to create extensive notes around 
+the configuration options so that I'll understand it when I open it six months
+down the line.
+
+Before this organization, my emacs configuration, though not cluttered, was
+split across multiple files (e.g. Python related configurations in a separate file) 
+etc. This organization helps to keep everything at one place but still be able 
+to filter things using sparse trees, tags and other awesome features in org-mode
+
+** Inspiration
+This document is inspired by the amazing configuration by amazing Sacha Chua,
+[[https://dl.dropboxusercontent.com/u/3968124/sacha-emacs.html][given here]]. The other inspiration is [[http://www.mfoot.com/][this post]] by Martin Foot.
+
+** How
+This is my understanding of how things work. We put this current document at a
+suitable location. In the emacs init file (for example emacs.d), we use the
+function org-babel-load-file with the path to this file as argument. The 
+org-babel-load-file function extracts any emacs source code from the file and
+puts it into another pure source code file. That source code file is then loaded
+using load-file function.
+
+* Emacs Initialization
+Here I am putting all the configuration which are global and not connected to
+any particular package or programming language.
+
+** Package Management
+I don't understand package management in emacs part completely yet. So the
+package installation on my system are scattered across two places. Most of the
+packages are under the elpa directory in "~/.emacs.d/elpa" but some packages are
+in the /usr/share/emacs/site-lisp directory. 
+
+As I understand it, the packages installed using the package system in emacs
+will be under elpa directory. For other packages to load, I need to add those
+locations on my load path.
+
+*** Package Initialization
+
+Change the load path to load packages from other directories
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/settings/")
+(add-to-list 'load-path "/usr/share/emacs/site-lisp")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(require 'package)
+(add-to-list 'package-archives
+             '("melpa" . "http://melpa.org/packages/") t)
+(package-initialize)
+#+END_SRC
+
+
+** Global Settings
+
+Set interactively do things mode to true. I don't how can this be optional?
+
+#+BEGIN_SRC emacs-lisp
+(ido-mode t)
+#+END_SRC
+
+Ibuffer is much useful to quickly filter, delete buffers. Rewire list
+buffers to ibuffer.
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+#+END_SRC
+
+I like the Zenburn theme. So use that at startup.
+
+#+BEGIN_SRC emacs-lisp
+(load-theme 'zenburn t)
+#+END_SRC
+
+* Programming
+All settings related to programming go here.
+
+** Global Settings
+Contains settings not tied up to particular language.
+
+#+BEGIN_SRC emacs-lisp
+(column-number-mode t)
+(set-language-environment "UTF-8")
+(linum-mode t)
+(show-paren-mode t)
+#+END_SRC
+
+*** Projectile
+Projectile is a package used for quick navigation and bunch of other
+goodies while working with projects.
+Though, projectile mode has a bug where it interfers with tramp.
+More details [[https://github.com/bbatsov/projectile/issues/523][here]]. So do some settings to avoid the issue.
+
+#+BEGIN_SRC emacs-lisp
+(projectile-global-mode)
+(setq projectile-mode-line " Projectile")
+#+END_SRC
+
+** Python Settings
+
+Use Ipython as interpreter for python. I am not yet sure about the
+other options set here.
+
+#+BEGIN_SRC emacs-lisp
+(require 'python)
+(setq
+  python-shell-interpreter "/usr/local/bin/ipython"
+  python-shell-interpreter-args ""
+  python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+  python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+  python-shell-completion-setup-code
+    "from IPython.core.completerlib import module_completion"
+  python-shell-completion-module-string-code
+    "';'.join(module_completion('''%s'''))\n"
+  python-shell-completion-string-code
+  "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+#+END_SRC
+* Org Mode
+Contains all the settings for org mode
+
+** Agenda Files
+I tend to have a large number of org files. I use org mode more as a general 
+purpose note taking and not just for todos. But I do not want todos from all
+the files to appear in my agenda. Also, by default it will open all the
+files in buffers under a director. So specifically set only the files which
+should be tracked for agenda.
+
+#+BEGIN_SRC emacs-lisp
+(setq org-agenda-files (quote
+			("~/data/personal/Dropbox/notes/org_notes/work.org"
+			 "~/data/personal/Dropbox/notes/org_notes/personal.org"
+			 "~/data/personal/Dropbox/notes/org_notes/captures.org")))
+#+END_SRC
+
+** Workflows
+I tend to wear multiple hats at work. So create different workflows.
+
+#+BEGIN_SRC emacs-lisp
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "|" "DONE(d!)" "DELEGATED(g!)")
+	(sequence "SPEC(s)" "IN-PROGRESS(p!)" "FEEDBACK(f)" "REVIEW(r)" "BLOCKED(b@)" "|" "DONE(d!)")))
+#+END_SRC
+
+** Note Capturing
+Quickly allow capturing of some note snipptes
+
+#+BEGIN_SRC emacs-lisp
+(setq org-default-notes-file
+      "~/data/personal/Dropbox/notes/org_notes/captures.org")
+(define-key global-map "\C-cc" 'org-capture)
+#+END_SRC
+
+** Babel
+;; make org mode allow eval of some langs
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((emacs-lisp . t)
+   (clojure . t)
+   (python . t)
+   (ruby . t)))
+
