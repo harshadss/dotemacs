@@ -43,17 +43,18 @@ locations on my load path.
 
 *** Package Initialization
 
-Change the load path to load packages from other directories
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'load-path "~/.emacs.d/settings/")
-(add-to-list 'load-path "/usr/share/emacs/site-lisp")
-#+END_SRC
-
+Add Melpa
 #+BEGIN_SRC emacs-lisp
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)
+#+END_SRC
+
+Change the load path to load packages from other directories
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/settings/")
+(add-to-list 'load-path "/usr/share/emacs/site-lisp")
 #+END_SRC
 
 
@@ -76,6 +77,37 @@ I like the Zenburn theme. So use that at startup.
 
 #+BEGIN_SRC emacs-lisp
 (load-theme 'zenburn t)
+#+END_SRC
+
+** Custom Functions
+Contains list of custom functions that I want to run at startup.
+
+*** Time Related
+**** Alarm
+The idea is taken from [[https://github.com/twillis/my-emacs-config/blob/master/local/alarm.el][this emacs config.]] 
+
+#+BEGIN_SRC emacs-lisp
+(defvar alarm-clock-timer nil
+  "Keep timer so that the user can cancel the alarm")
+;; actual message to display
+(defun alarm-clock-message (text)
+  "The actual alarm action"
+  (message-box text))
+
+;; the main alarm clock function
+(defun alarm-clock ()
+  "Set an alarm.
+The time format is the same accepted by `run-at-time'.  For
+example \"11:30am\"."
+  (interactive)
+  (let ((time (read-string "Time: "))
+        (text (read-string "Alarm message: ")))
+    (setq alarm-clock-timer (run-at-time time nil 'alarm-clock-message text))))
+
+(defun alarm-clock-cancel ()
+  "Cancel the alarm clock"
+  (interactive)
+  (cancel-timer alarm-clock-timer)) 
 #+END_SRC
 
 * Programming
@@ -157,11 +189,13 @@ Quickly allow capturing of some note snipptes
 #+END_SRC
 
 ** Babel
-;; make org mode allow eval of some langs
+Make org mode allow eval of some langs
+#+BEGIN_SRC emacs-lisp
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((emacs-lisp . t)
    (clojure . t)
    (python . t)
    (ruby . t)))
+#+END_SRC
 
