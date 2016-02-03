@@ -57,6 +57,16 @@ Change the load path to load packages from other directories
 (add-to-list 'load-path "/usr/share/emacs/site-lisp")
 #+END_SRC
 
+*** Required Packages
+I should automate the installation of these apckages somehow if they are not 
+present. Just listing them down for now.
+  + magit
+  + cider
+  + ess (for R)
+  + jedi (python autocompletion)
+  + projectile (for clojure)
+  + golden-ratio
+  + restclient
 
 ** Global Settings
 
@@ -83,6 +93,17 @@ I like the Zenburn theme. So use that at startup.
 Contains list of custom functions that I want to run at startup.
 
 *** Time Related
+**** Date To Epoch
+Need a quick way to convert date strings to epoch. There could be a direct
+function for doing this, but I am not aware of any. So this.
+
+#+BEGIN_SRC emacs-lisp
+(defun ds-to-epoch (ds)
+  "ds is the date string"
+  (let ((time (date-to-time ds)))
+    (float-time time)))
+#+END_SRC
+
 **** Alarm
 The idea is taken from [[https://github.com/twillis/my-emacs-config/blob/master/local/alarm.el][this emacs config.]] 
 
@@ -110,6 +131,29 @@ example \"11:30am\"."
   (cancel-timer alarm-clock-timer)) 
 #+END_SRC
 
+*** Window Management
+**** Golden Ratio Settings
+Use Golden ratio package for better resizing of windows. Exclude certain modes
+from resizing by default.
+#+BEGIN_SRC emacs-lisp
+(require 'golden-ratio)
+(setq golden-ratio-exclude-modes '("ediff-mode"
+                                   "magit-log-mode"
+                                   "magit-reflog-mode"
+                                   "magit-status-mode"
+                                   "eshell-mode" 
+                                   "dired-mode"))
+(golden-ratio-mode 1)
+#+END_SRC
+
+**** Disable Bars
+Maximize the available space on emacs. Get rid of menu bar tool bar.
+
+#+BEGIN_SRC emacs-lisp
+(tool-bar-mode -1)
+(menu-bar-mode -1)
+#+END_SRC
+
 * Programming
 All settings related to programming go here.
 
@@ -121,6 +165,7 @@ Contains settings not tied up to particular language.
 (set-language-environment "UTF-8")
 (linum-mode t)
 (show-paren-mode t)
+(paredit-mode t)
 #+END_SRC
 
 *** Projectile
@@ -155,6 +200,13 @@ other options set here.
 #+END_SRC
 * Org Mode
 Contains all the settings for org mode
+** Custom keys
+Create custom keys for org-agenda and org-iswitchb. The iswitchb helps
+to quickly navigate beween only org files.
+#+BEGIN_SRC emacs-lisp
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
+#+END_SRC
 
 ** Agenda Files
 I tend to have a large number of org files. I use org mode more as a general 
@@ -196,6 +248,8 @@ Make org mode allow eval of some langs
  '((emacs-lisp . t)
    (clojure . t)
    (python . t)
+   (R . t)
+   (sh . t)
    (ruby . t)))
 #+END_SRC
 
