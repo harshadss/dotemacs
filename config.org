@@ -131,6 +131,23 @@ example \"11:30am\"."
   (cancel-timer alarm-clock-timer)) 
 #+END_SRC
 
+*** Word List Manipulation
+The following function helps to convert a newline separated list of words
+to a comma separated list of strings. Can be useful to create a vector/set
+in Python from data in a file.
+
+#+BEGIN_SRC emacs-lisp
+(defun lines-to-cslist (start end &optional arg)
+  (interactive "r\nP")
+  (let ((insertion
+         (mapconcat 
+          (lambda (x) (format "\"%s\"" x))
+          (split-string (buffer-substring start end)) ", ")))
+    (delete-region start end)
+    (insert insertion)
+    (when arg (forward-char (length insertion)))))
+#+END_SRC
+
 *** Window Management
 **** Golden Ratio Settings
 Use Golden ratio package for better resizing of windows. Exclude certain modes
@@ -198,6 +215,13 @@ other options set here.
   python-shell-completion-string-code
   "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 #+END_SRC
+
+Setup auto-completion for jedi in Python
+
+#+BEGIN_SRC emacs-lisp
+(add-hook 'python-mode-hook 'jedi:setup)
+#+END_SRC
+
 * Org Mode
 Contains all the settings for org mode
 ** Custom keys
@@ -218,6 +242,7 @@ should be tracked for agenda.
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-files (quote
 			("~/data/personal/Dropbox/notes/org_notes/work.org"
+                         "~/data/personal/Dropbox/notes/org_notes/captures.org"
 			 "~/data/personal/Dropbox/notes/org_notes/personal.org"
 			 "~/data/personal/Dropbox/notes/org_notes/captures.org")))
 #+END_SRC
@@ -238,6 +263,18 @@ Quickly allow capturing of some note snipptes
 (setq org-default-notes-file
       "~/data/personal/Dropbox/notes/org_notes/captures.org")
 (define-key global-map "\C-cc" 'org-capture)
+#+END_SRC
+
+Set a custom templates for quick capturing of notes.
+
+#+BEGIN_SRC emacs-lisp
+(setq org-capture-templates
+      '(("p" "Phone Call" entry (file+headline 
+         "/home/harshad.saykhedkar/data/personal/Dropbox/notes/org_notes/captures.org" 
+         "Tasks") "* TODO Call :: %?\n  %T")
+        ("b" "Bill Payment" entry (file+headline
+         "/home/harshad.saykhedkar/data/personal/Dropbox/notes/org_notes/captures.org"
+         "Tasks") "* TODO Bill Payment :: %?\n %T")))
 #+END_SRC
 
 ** Babel
