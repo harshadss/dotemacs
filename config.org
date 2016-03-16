@@ -196,6 +196,25 @@ More details [[https://github.com/bbatsov/projectile/issues/523][here]]. So do s
 (setq projectile-mode-line " Projectile")
 #+END_SRC
 
+** Golang Settings
+Settings for coding in go programming language in Emacs. For the settings to
+work correctly, the following packages must be installed beforehand,
+  + go-mode
+  + go-eldoc
+Define the following custom function to set things up.
+
+#+BEGIN_SRC emacs-lisp
+
+(defun go-mode-setup ()
+ (setq compile-command "go build -v && go test -v && go vet")
+ (define-key (current-local-map) "\C-c\C-c" 'compile)
+ (go-eldoc-setup)
+ (add-hook 'before-save-hook 'gofmt-before-save)
+ (local-set-key (kbd "M-.") 'godef-jump))
+
+(add-hook 'go-mode-hook 'go-mode-setup)
+#+END_SRC
+
 ** Python Settings
 
 Use Ipython as interpreter for python. I am not yet sure about the
@@ -274,7 +293,10 @@ Set a custom templates for quick capturing of notes.
          "Tasks") "* TODO Call :: %?\n  %T")
         ("b" "Bill Payment" entry (file+headline
          "/home/harshad.saykhedkar/data/personal/Dropbox/notes/org_notes/captures.org"
-         "Tasks") "* TODO Bill Payment :: %?\n %T")))
+         "Tasks") "* TODO Bill Payment :: %?\n %T")
+        ("t" "TODO" entry (file+headline
+         "/home/harshad.saykhedkar/data/personal/Dropbox/notes/org_notes/captures.org"
+         "Tasks") "* TODO %?\n %T")))
 #+END_SRC
 
 ** Babel
