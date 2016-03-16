@@ -89,6 +89,12 @@ I like the Zenburn theme. So use that at startup.
 (load-theme 'zenburn t)
 #+END_SRC
 
+Prohibit startup screen display.
+
+#+BEGIN_SRC emacs-lisp
+(set 'inhibit-startup-screen t)
+#+END_SRC
+
 ** Custom Functions
 Contains list of custom functions that I want to run at startup.
 
@@ -183,6 +189,7 @@ Contains settings not tied up to particular language.
 (linum-mode t)
 (show-paren-mode t)
 (paredit-mode t)
+(auto-complete-mode 1)
 #+END_SRC
 
 *** Projectile
@@ -197,10 +204,13 @@ More details [[https://github.com/bbatsov/projectile/issues/523][here]]. So do s
 #+END_SRC
 
 ** Golang Settings
+The configuration here is taken from [[http://andrewjamesjohnson.com/configuring-emacs-for-go-development/][this post by Andrew Johnson]].
 Settings for coding in go programming language in Emacs. For the settings to
 work correctly, the following packages must be installed beforehand,
   + go-mode
   + go-eldoc
+  + auto-complete
+  + go-autocomplete
 Define the following custom function to set things up.
 
 #+BEGIN_SRC emacs-lisp
@@ -213,6 +223,18 @@ Define the following custom function to set things up.
  (local-set-key (kbd "M-.") 'godef-jump))
 
 (add-hook 'go-mode-hook 'go-mode-setup)
+
+(defun auto-complete-for-go ()
+(auto-complete-mode 1))
+
+(add-hook 'go-mode-hook 'auto-complete-for-go)
+
+(require 'auto-complete-config)
+(with-eval-after-load 'go-mode
+  (require 'go-autocomplete))
+
+;; set path of gocode package
+
 #+END_SRC
 
 ** Python Settings
