@@ -67,6 +67,8 @@ present. Just listing them down for now.
   + projectile (for clojure)
   + golden-ratio
   + restclient
+  + go-mode
+  + gocode for autocompletion
 
 ** Global Settings
 
@@ -283,7 +285,6 @@ should be tracked for agenda.
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-files (quote
 			("~/data/personal/Dropbox/notes/org_notes/work.org"
-                         "~/data/personal/Dropbox/notes/org_notes/captures.org"
 			 "~/data/personal/Dropbox/notes/org_notes/personal.org"
 			 "~/data/personal/Dropbox/notes/org_notes/captures.org")))
 #+END_SRC
