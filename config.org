@@ -72,17 +72,16 @@ present. Just listing them down for now.
 
 ** Global Settings
 
-Set interactively do things mode to true. I don't how can this be optional?
+Always use fullscreen mode.
 
 #+BEGIN_SRC emacs-lisp
-(ido-mode t)
+(add-to-list 'default-frame-alist '(fullscreen . fullboth))
 #+END_SRC
 
-Ibuffer is much useful to quickly filter, delete buffers. Rewire list
-buffers to ibuffer.
+Use better defaults package.
 
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-x C-b") 'ibuffer)
+(require 'better-defaults)
 #+END_SRC
 
 I like the Zenburn theme. So use that at startup.
@@ -95,6 +94,18 @@ Prohibit startup screen display.
 
 #+BEGIN_SRC emacs-lisp
 (set 'inhibit-startup-screen t)
+#+END_SRC
+
+Set default method for tramp to ssh (uses scp by default I think).
+
+#+BEGIN_SRC emacs-lisp
+(set 'tramp-default-method "ssh")
+#+END_SRC
+
+Increase the default font size to 14pt.
+
+#+BEGIN_SRC emacs-lisp
+(set-face-attribute 'default nil :height 140)
 #+END_SRC
 
 ** Custom Functions
@@ -169,14 +180,6 @@ from resizing by default.
                                    "eshell-mode" 
                                    "dired-mode"))
 (golden-ratio-mode 1)
-#+END_SRC
-
-**** Disable Bars
-Maximize the available space on emacs. Get rid of menu bar tool bar.
-
-#+BEGIN_SRC emacs-lisp
-(tool-bar-mode -1)
-(menu-bar-mode -1)
 #+END_SRC
 
 * Programming
@@ -285,8 +288,8 @@ should be tracked for agenda.
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-files (quote
 			("~/data/personal/Dropbox/notes/org_notes/work.org"
-			 "~/data/personal/Dropbox/notes/org_notes/personal.org"
-			 "~/data/personal/Dropbox/notes/org_notes/captures.org")))
+                         "~/data/personal/Dropbox/notes/org_notes/captures.org"
+			 "~/data/personal/Dropbox/notes/org_notes/personal.org")))
 #+END_SRC
 
 ** Workflows
@@ -321,7 +324,6 @@ Set a custom templates for quick capturing of notes.
          "/home/harshad.saykhedkar/data/personal/Dropbox/notes/org_notes/captures.org"
          "Tasks") "* TODO %?\n %T")))
 #+END_SRC
-
 ** Babel
 Make org mode allow eval of some langs
 #+BEGIN_SRC emacs-lisp
@@ -335,3 +337,21 @@ Make org mode allow eval of some langs
    (ruby . t)))
 #+END_SRC
 
+** Skeletons
+Defining some skeletons to quickly start data analysis. The idea is taken from
+[[http://orgmode.org/worg/org-contrib/babel/how-to-use-Org-Babel-for-R.html][here]]. 
+
+*** R Analysis Skeleton
+
+Defining a custom skeleton to call on any org file to use it for R analysis.
+#+BEGIN_SRC emacs-lisp
+(define-skeleton org-skeleton-analysis
+  "Header info for a emacs-org file."
+  "Title: "
+  "#+TITLE:" str " \n"
+  "#+AUTHOR: Harshad Saykhedkar\n"
+  "#+BABEL: :session *R* :cache yes :results output graphics :exports both :tangle yes \n"
+  "-----"
+ )
+(global-set-key [C-S-f1] 'org-skeleton-analysis)
+#+END_SRC
