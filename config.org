@@ -70,6 +70,27 @@ present. Just listing them down for now.
   + go-mode
   + gocode for autocompletion
 
+The following code initiates automatic installation of certain packages.
+#+BEGIN_SRC emacs-lisp
+(when (not package-archive-contents)
+  (package-refresh-contents))
+
+(defvar myPackages
+  '(better-defaults
+    zenburn-theme
+    magit
+    cider
+    golden-ratio
+    restclient
+    jedi))
+
+(mapc #'(lambda (package)
+    (unless (package-installed-p package)
+      (package-install package)))
+      myPackages)
+
+#+END_SRC
+
 ** Global Settings
 
 Always use fullscreen mode.
