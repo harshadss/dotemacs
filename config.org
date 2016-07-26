@@ -82,6 +82,7 @@ The following code initiates automatic installation of certain packages.
     cider
     golden-ratio
     restclient
+    emms
     jedi))
 
 (mapc #'(lambda (package)
@@ -288,7 +289,6 @@ Setup auto-completion for jedi in Python
 #+BEGIN_SRC emacs-lisp
 (add-hook 'python-mode-hook 'jedi:setup)
 #+END_SRC
-
 * Org Mode
 Contains all the settings for org mode
 ** Custom keys
@@ -375,4 +375,22 @@ Defining a custom skeleton to call on any org file to use it for R analysis.
   "-----"
  )
 (global-set-key [C-S-f1] 'org-skeleton-analysis)
+#+END_SRC
+* Misc
+** Setup Music Setup
+Code below helps to setup emacs multimedia system for playing music. Package
+emms is installed during initialization if not present. Not using the browser
+interface of emms currently as I find it bit confusing at the moment. I stick
+to opening the music folder in dired and then doing emms-add-dired on marked
+files.
+I have no idea how emms is able to find the right player to play the file. I
+think the emms-default-player sets up players and with vlc installed on the
+system most of the formats can be played.
+
+#+BEGIN_SRC emacs-lisp
+(require 'emms-setup)
+(emms-standard)
+(emms-default-players)
+; tell emms where is the music
+(setq emms-source-file-default-directory "~/Music/")
 #+END_SRC
