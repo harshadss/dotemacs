@@ -130,6 +130,19 @@ Increase the default font size to 14pt.
 (set-face-attribute 'default nil :height 140)
 #+END_SRC
 
+Enable line number mode always
+
+#+BEGIN_SRC emacs-lisp
+(linum-mode 1)
+#+END_SRC
+
+Display time in the mode line along with date.
+
+#+BEGIN_SRC emacs-lisp
+(setq display-time-day-and-date t)
+(display-time)
+#+END_SRC
+
 ** Custom Functions
 Contains list of custom functions that I want to run at startup.
 
@@ -323,7 +336,11 @@ I tend to wear multiple hats at work. So create different workflows.
 #+END_SRC
 
 ** Note Capturing
-Quickly allow capturing of some note snipptes
+Quickly allow capturing of some note snipptes. I have configured it to capture 
+things like errands, phone call to be made or bookmarks. I have realized that
+capturing bookmarks in Emacs with some description (why did I capture this?) and
+adding tags will be the simplest way of capturing bookmarks for long use,
+as long as the file is backed up somewhere periodically.
 
 #+BEGIN_SRC emacs-lisp
 (setq org-default-notes-file
@@ -338,9 +355,13 @@ Set a custom templates for quick capturing of notes.
       '(("p" "Phone Call" entry (file+headline 
          "/home/harshad.saykhedkar/data/personal/Dropbox/notes/org_notes/captures.org" 
          "Tasks") "* TODO Call :: %?\n  %T")
-        ("b" "Bill Payment" entry (file+headline
+        ("e" "Errands: " entry (file+headline
          "/home/harshad.saykhedkar/data/personal/Dropbox/notes/org_notes/captures.org"
-         "Tasks") "* TODO Bill Payment :: %?\n %T")
+         "Tasks") "* TODO Errand :: %?\n %T")
+        ("b" "Bookmark" entry (file+headline 
+         "/home/harshad.saykhedkar/data/personal/Dropbox/notes/org_notes/bookmarks.org" 
+         "Bookmarks")
+	 "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
         ("t" "TODO" entry (file+headline
          "/home/harshad.saykhedkar/data/personal/Dropbox/notes/org_notes/captures.org"
          "Tasks") "* TODO %?\n %T")))
