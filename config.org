@@ -83,6 +83,7 @@ The following code initiates automatic installation of certain packages.
     golden-ratio
     restclient
     emms
+    pydoc-info
     jedi))
 
 (mapc #'(lambda (package)
@@ -295,6 +296,8 @@ other options set here.
     "';'.join(module_completion('''%s'''))\n"
   python-shell-completion-string-code
   "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+;; need pydoc-info mode to browse documentation easily in python mode
+(require 'pydoc-info)
 #+END_SRC
 
 Setup auto-completion for jedi in Python
