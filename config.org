@@ -92,7 +92,6 @@ The following code initiates automatic installation of certain packages.
       myPackages)
 
 #+END_SRC
-
 ** Global Settings
 
 Always use fullscreen mode.
@@ -142,6 +141,32 @@ Display time in the mode line along with date.
 #+BEGIN_SRC emacs-lisp
 (setq display-time-day-and-date t)
 (display-time)
+#+END_SRC
+
+*** Ibuffer grouping
+I don't want to have a laundry list of buffers being shown in ibuffer menu.
+Inspired by [[http://martinowen.net/blog/2010/02/03/tips-for-emacs-ibuffer.html][this post]], the following code creates most frequently used groups.
+
+#+BEGIN_SRC emacs-lisp
+(setq ibuffer-saved-filter-groups
+      '(("work"
+	 ("emacs-config" (or (filename . ".emacs.d")
+			     (filename . "emacs-config")))
+	 ("Org" (or (mode . org-mode)
+		    (filename . "OrgMode")))
+         ("Python" (mode . python-mode))
+         ("Shells" (mode . shell-mode))
+         ("Dired" (mode . dired-mode))
+	 ("Magit" (name . "\*magit"))
+	 ("Help" (or (name . "\*Help\*")
+		     (name . "\*Apropos\*")
+		     (name . "\*info\*"))))))
+
+(add-hook 'ibuffer-mode-hook
+	  '(lambda ()
+	     (ibuffer-auto-mode 1)
+	     (ibuffer-switch-to-saved-filter-groups "work")))
+
 #+END_SRC
 
 ** Custom Functions
