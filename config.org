@@ -305,7 +305,6 @@ Define the following custom function to set things up.
 ;; set path of gocode package
 
 #+END_SRC
-
 ** Python Settings
 
 Use Ipython as interpreter for python. I am not yet sure about the
@@ -328,6 +327,17 @@ Setup auto-completion for jedi in Python
 (add-hook 'python-mode-hook 'auto-complete-mode)
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:complete-on-dot t)
+#+END_SRC
+
+** scheme settings
+Enabling auto-complete mode in geiser for scheme/guile programming.
+
+#+BEGIN_SRC emacs-lisp
+(require 'ac-geiser)
+(add-hook 'geiser-mode-hook 'ac-geiser-setup)
+(add-hook 'geiser-repl-mode-hook 'ac-geiser-setup)
+(eval-after-load "auto-complete"
+  '(add-to-list 'ac-modes 'geiser-repl-mode))
 #+END_SRC
 * Org Mode
 Contains all the settings for org mode
