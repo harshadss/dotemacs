@@ -84,7 +84,11 @@ The following code initiates automatic installation of certain packages.
     restclient
     emms
     pydoc-info
-    jedi))
+    auto-complete
+    jedi
+    ein
+    geiser
+    ac-geiser))
 
 (mapc #'(lambda (package)
     (unless (package-installed-p package)
@@ -254,7 +258,7 @@ Contains settings not tied up to particular language.
 (set-language-environment "UTF-8")
 (linum-mode t)
 (show-paren-mode t)
-(paredit-mode t)
+;;(paredit-mode t)
 (auto-complete-mode 1)
 #+END_SRC
 
@@ -265,8 +269,8 @@ Though, projectile mode has a bug where it interfers with tramp.
 More details [[https://github.com/bbatsov/projectile/issues/523][here]]. So do some settings to avoid the issue.
 
 #+BEGIN_SRC emacs-lisp
-(projectile-global-mode)
-(setq projectile-mode-line " Projectile")
+;;(projectile-global-mode)
+;;(setq projectile-mode-line " Projectile")
 #+END_SRC
 
 ** Golang Settings
@@ -280,24 +284,23 @@ work correctly, the following packages must be installed beforehand,
 Define the following custom function to set things up.
 
 #+BEGIN_SRC emacs-lisp
+;; (defun go-mode-setup ()
+;;  (setq compile-command "go build -v && go test -v && go vet")
+;;  (define-key (current-local-map) "\C-c\C-c" 'compile)
+;;  (go-eldoc-setup)
+;;  (add-hook 'before-save-hook 'gofmt-before-save)
+;;  (local-set-key (kbd "M-.") 'godef-jump))
 
-(defun go-mode-setup ()
- (setq compile-command "go build -v && go test -v && go vet")
- (define-key (current-local-map) "\C-c\C-c" 'compile)
- (go-eldoc-setup)
- (add-hook 'before-save-hook 'gofmt-before-save)
- (local-set-key (kbd "M-.") 'godef-jump))
+;;(add-hook 'go-mode-hook 'go-mode-setup)
 
-(add-hook 'go-mode-hook 'go-mode-setup)
+;;(defun auto-complete-for-go ()
+;;(auto-complete-mode 1))
 
-(defun auto-complete-for-go ()
-(auto-complete-mode 1))
+;;(add-hook 'go-mode-hook 'auto-complete-for-go)
 
-(add-hook 'go-mode-hook 'auto-complete-for-go)
-
-(require 'auto-complete-config)
-(with-eval-after-load 'go-mode
-  (require 'go-autocomplete))
+;;(require 'auto-complete-config)
+;;(with-eval-after-load 'go-mode
+;;  (require 'go-autocomplete))
 
 ;; set path of gocode package
 
@@ -312,15 +315,7 @@ other options set here.
 (require 'python)
 (setq
   python-shell-interpreter "/usr/local/bin/ipython"
-  python-shell-interpreter-args ""
-  python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-  python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
-  python-shell-completion-setup-code
-    "from IPython.core.completerlib import module_completion"
-  python-shell-completion-module-string-code
-    "';'.join(module_completion('''%s'''))\n"
-  python-shell-completion-string-code
-  "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+  python-shell-interpreter-args "--simple-prompt -i")
 ;; need pydoc-info mode to browse documentation easily in python mode
 (require 'pydoc-info)
 #+END_SRC
@@ -328,7 +323,11 @@ other options set here.
 Setup auto-completion for jedi in Python
 
 #+BEGIN_SRC emacs-lisp
+;;(jedi:install-server)
+(autoload 'jedi:setup "jedi" nil t)
+(add-hook 'python-mode-hook 'auto-complete-mode)
 (add-hook 'python-mode-hook 'jedi:setup)
+(setq jedi:complete-on-dot t)
 #+END_SRC
 * Org Mode
 Contains all the settings for org mode
@@ -349,9 +348,9 @@ should be tracked for agenda.
 
 #+BEGIN_SRC emacs-lisp
 (setq org-agenda-files (quote
-			("~/data/personal/Dropbox/notes/org_notes/work.org"
-                         "~/data/personal/Dropbox/notes/org_notes/captures.org"
-			 "~/data/personal/Dropbox/notes/org_notes/personal.org")))
+			("/data/data/personal/Dropbox/notes/org_notes/work.org"
+                         "/data/data/personal/Dropbox/notes/org_notes/captures.org"
+			 "/data/data/personal/Dropbox/notes/org_notes/personal.org")))
 #+END_SRC
 
 ** Workflows
@@ -372,7 +371,7 @@ as long as the file is backed up somewhere periodically.
 
 #+BEGIN_SRC emacs-lisp
 (setq org-default-notes-file
-      "~/data/personal/Dropbox/notes/org_notes/captures.org")
+      "/data/data/personal/Dropbox/notes/org_notes/captures.org")
 (define-key global-map "\C-cc" 'org-capture)
 #+END_SRC
 
@@ -381,17 +380,17 @@ Set a custom templates for quick capturing of notes.
 #+BEGIN_SRC emacs-lisp
 (setq org-capture-templates
       '(("p" "Phone Call" entry (file+headline 
-         "/home/harshad.saykhedkar/data/personal/Dropbox/notes/org_notes/captures.org" 
+         "/data/data/personal/Dropbox/notes/org_notes/captures.org" 
          "Tasks") "* TODO Call :: %?\n  %T")
         ("e" "Errands: " entry (file+headline
-         "/home/harshad.saykhedkar/data/personal/Dropbox/notes/org_notes/captures.org"
+         "/data/data/personal/Dropbox/notes/org_notes/captures.org"
          "Tasks") "* TODO Errand :: %?\n %T")
         ("b" "Bookmark" entry (file+headline 
-         "/home/harshad.saykhedkar/data/personal/Dropbox/notes/org_notes/bookmarks.org" 
+         "/data/data/personal/Dropbox/notes/org_notes/bookmarks.org" 
          "Bookmarks")
 	 "* %?\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
         ("t" "TODO" entry (file+headline
-         "/home/harshad.saykhedkar/data/personal/Dropbox/notes/org_notes/captures.org"
+         "/data/data/personal/Dropbox/notes/org_notes/captures.org"
          "Tasks") "* TODO %?\n %T")))
 #+END_SRC
 ** Babel
